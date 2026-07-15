@@ -5,11 +5,11 @@ import { isValidObjectId } from "mongoose";
 
 export const getAllNotesSchema = {
   [Segments.QUERY]: Joi.object({
-    page: Joi.number().integer().min(1).messages({
+    page: Joi.number().integer().min(1).default(1).messages({
       "number.base": "Page must be a number",
       "number.min": "Page must be at least {#limit}",
     }),
-    perPage: Joi.number().integer().min(1).max(20).messages({
+    perPage: Joi.number().integer().min(5).max(20).default(10).messages({
       "number.base": "Limit must be a number",
       "number.min": "Limit must be at least {#limit}",
       "number.max": "Limit must be at most {#limit}",
@@ -33,7 +33,6 @@ export const createNoteSchema = {
     content: Joi.string().allow(''),
     tag: Joi.string().valid(...TAGS).messages({
       "string.base": "Tags must be a string",
-      "any.required": "Tags are required",
       "any.only": "Tags must be one of the following: {#valids}",
     }),
   }),
@@ -61,9 +60,15 @@ export const updateNoteSchema = {
     content: Joi.string().allow(''),
     tag: Joi.string().valid(...TAGS).messages({
       "string.base": "Tags must be a string",
-      "any.required": "Tags are required",
       "any.only": "Tags must be one of the following: {#valids}",
-    }).min(1),
+    }),
+  }).min(1),
+  [Segments.PARAMS]: Joi.object({
+    noteId: Joi.string().custom((value, helpers) => {
+      if (!isValidObjectId(value)) {
+        return helpers.message("any.invalid");
+      }
+      return value;
+    }),
   }),
-  ...noteIdSchema,
 };
