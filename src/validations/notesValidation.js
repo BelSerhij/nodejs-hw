@@ -42,7 +42,7 @@ export const noteIdSchema = {
   [Segments.PARAMS]: Joi.object({
     noteId: Joi.string().custom((value, helpers) => {
       if (!isValidObjectId(value)) {
-        return helpers.message("noteId має бути коректним MongoDB ObjectId");
+        return helpers.message("noteId must be a valid MongoDB ObjectId");
       }
       return value;
     }).required(),
@@ -66,7 +66,7 @@ export const updateNoteSchema = {
   [Segments.PARAMS]: Joi.object({
     noteId: Joi.string().custom((value, helpers) => {
       if (!isValidObjectId(value)) {
-        return helpers.message("any.invalid");
+        return helpers.message("noteId must be a valid MongoDB ObjectId");
       }
       return value;
     }).required(),
